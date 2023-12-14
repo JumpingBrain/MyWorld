@@ -49,6 +49,7 @@ class Main:
 					if self.player.jump_cnt < 2:
 						self.player.y_momentum = -4
 						self.player.jump_cnt += 1
+						self.player.movement = 'jumping'
 
 		self.player.update()
 

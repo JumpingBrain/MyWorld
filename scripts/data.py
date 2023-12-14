@@ -29,12 +29,14 @@ class Data:
 				unpack_size, dis = self.get_unpack_size(filename)
 				self.images[foldername][filename[:-dis]] = self.unpack(
 					pygame.image.load(curr_dir + filename), unpack_size)
+		print(self.images['maps'])
 
 
 		#player stuff
 		self.spawn = nongame_data['playerspawn']
 		self.running_ani_speed = .25
 		self.idle_ani_speed = .25
+		self.hitground_ani_speed = .2
 
 		self.fpscap = 10_000
 		self.dt_fps = 60

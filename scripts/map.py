@@ -3,7 +3,8 @@ from data import data
 
 
 RECT_EXCLUSIONS = [
-	'tree'
+	'tree',
+	'grass_end'
 ]
 
 def one_surf(map_data):

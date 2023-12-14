@@ -7,7 +7,7 @@ class Player:
 	def __init__(self, Main):
 		self.main = Main
 
-		self.rect = pygame.FRect(data.spawn[0], data.spawn[1], 4, 8)
+		self.rect = pygame.FRect(data.spawn[0], data.spawn[1], 7, 11)
 
 		self.images = {}
 		for key in data.images['player']:
@@ -18,8 +18,9 @@ class Player:
 		self.dir = 1
 		self.mov_dir = 0
 		self.curr_image_frame = 0
-		self.mov_speed = 1
+		self.mov_speed = 1.5
 		self.movement = 'idle'
+		self.hitground = False
 
 		self.y_momentum = 0
 		self.falling_speed = .2
@@ -32,6 +33,7 @@ class Player:
 	def render(self):
 		if self.curr_image_frame >= len(self.images[f'{self.movement} {self.dir}']):
 			self.curr_image_frame = 0
+			if self.hitground: self.hitground = False
 		self.main.display.blit(self.images[f'{self.movement} {self.dir}'][int(self.curr_image_frame)], (self.rect.x - self.main.int_camera[0], self.rect.y - self.main.int_camera[1]))
 
 	def collisions(self, rect_list):
@@ -48,11 +50,21 @@ class Player:
 		self.mov_dir = keys[pygame.K_d] - keys[pygame.K_a]
 		if self.mov_dir != 0:
 			self.dir = self.mov_dir
-			self.reset_ani('running')
+			if not self.hitground:
+				self.reset_ani('running')
 			self.movement = 'running'
 		else:
-			self.reset_ani('idle')
+			if not self.hitground:
+				self.reset_ani('idle')
 			self.movement = 'idle'
+
+		if self.jump_cnt > 0:
+			self.movement = 'jumping'
+
+		if self.hitground:
+			self.movement = 'hitground'
+
+		#print(self.hitground)
 
 
 		#do animation counting
@@ -60,6 +72,10 @@ class Player:
 			self.curr_image_frame += data.running_ani_speed * self.main.dt
 		elif self.movement == 'idle':
 			self.curr_image_frame += data.idle_ani_speed * self.main.dt
+		elif self.movement == 'hitground':
+			#print(self.curr_image_frame)
+			if self.mov_dir == 0: self.curr_image_frame += data.hitground_ani_speed * self.main.dt
+			else: self.curr_image_frame += data.hitground_ani_speed * 2 * self.main.dt
 
 		map_rects = self.main.map.map_rects
 
@@ -81,6 +97,9 @@ class Player:
 		for d in hits:
 			rect = d[0]
 			if self.y_momentum > 0:
+				if self.y_momentum > 1:
+					self.reset_ani('hitground')
+					self.hitground = True
 				self.rect.bottom = rect.top
 				self.y_momentum = 0
 				self.jump_cnt = 0
