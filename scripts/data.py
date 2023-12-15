@@ -29,7 +29,7 @@ class Data:
 				unpack_size, dis = self.get_unpack_size(filename)
 				self.images[foldername][filename[:-dis]] = self.unpack(
 					pygame.image.load(curr_dir + filename), unpack_size)
-		print(self.images['maps'])
+		#print(self.images['maps'])
 
 
 		#player stuff
