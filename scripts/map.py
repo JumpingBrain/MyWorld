@@ -13,22 +13,22 @@ def one_surf(map_data, sects):
 	map_width = max([[int(j) for j in i.split()][0] for i in map_data])
 	map_height = max([[int(j) for j in i.split()][1] for i in map_data])
 	map_corner = [min([[int(j) for j in i.split()][0] for i in map_data]), min([[int(j) for j in i.split()][1] for i in map_data])]
+
 	map_image = pygame.Surface((map_width, map_height)).convert()
 	map_image.set_colorkey((0, 0, 0, 0))
-	sect_sizes = []
-	for i in range(sects):
-		sect_sizes.append(((12 + (map_width / sects)) - ((12 + (map_width / sects)) % 12)) - 12)
-	x_sects = [[pygame.Surface((sect_sizes[i], map_height)).convert(), map_corner[0] + int((i * (map_width // sects)) - ((i * (map_width // sects)) % 12))] for i in range(sects)]
 	for key in map_data:
 		pos = [int(i) for i in key.split()]
-		for id, d in enumerate(x_sects):
-			surf = d[0]
-			surf.set_colorkey((0, 0, 0, 0))
-			x_pos = d[1]
-			if pos[0] >= x_pos and pos[0] < x_pos + sect_sizes[id]:
-				x_sects[id][0].blit(data.images['maps'][map_data[key][0]][int(map_data[key][1])], (pos[0] - x_pos, pos[1] - map_corner[1]))
-				break
-	return x_sects, map_corner
+		map_image.blit(data.images['maps'][map_data[key][0]][int(map_data[key][1])], (pos[0] - map_corner[0], pos[1] - map_corner[1]))
+
+	image_width = ceil(map_width / sects)
+	map_images = []
+	for i in range(sects):
+		surf = pygame.Surface((image_width, map_height)).convert()
+		surf.blit(map_image, (0, 0), (i * image_width, 0, image_width, map_height))
+		surf.set_colorkey((0, 0, 0, 0))
+		map_images.append(surf)
+
+	return map_images, map_corner, image_width
 
 def get_map_rects(map_data):
 	rects = []
@@ -59,12 +59,12 @@ class Map:
 
 		#load map
 		self.map_data = data.raw_map_data['fightingmap']
-		self.map_images, self.map_render_pos = one_surf(self.map_data, 3)
+		self.map_images, self.map_render_pos, self.map_slice_width = one_surf(self.map_data, 10)
 		self.map_rects = get_map_rects(self.map_data)
 
 	def render(self):
-		for d in self.map_images:
-			image = d[0]
-			x_pos = d[1]
-			self.main.display.blit(image, (x_pos - self.main.int_camera[0], self.map_render_pos[1] - self.main.int_camera[1]))
+		for id, map_slice in enumerate(self.map_images):
+			pos = [self.map_render_pos[0] + (id * self.map_slice_width), self.map_render_pos[1]]
+			if abs(self.main.player.pos[0] - pos[0]) < data.render_dis:
+				self.main.display.blit(map_slice, (pos[0] - self.main.int_camera[0], pos[1] - self.main.int_camera[1]))
 		#self.main.display.blit(self.map_images[0], (self.map_render_pos[0] - self.main.int_camera[0], self.map_render_pos[1] - self.main.int_camera[1]))

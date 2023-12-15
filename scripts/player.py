@@ -26,6 +26,11 @@ class Player:
 		self.falling_speed = .2
 		self.jump_cnt = 0
 
+	@property
+	def pos(self):
+		return [self.rect.centerx, self.rect.centery]
+	
+
 	def reset_ani(self, new_ani):
 		if new_ani != self.movement:
 			self.curr_image_frame = 0

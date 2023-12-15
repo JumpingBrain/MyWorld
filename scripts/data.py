@@ -38,6 +38,8 @@ class Data:
 		self.idle_ani_speed = .25
 		self.hitground_ani_speed = .2
 
+		self.render_dis = 300
+
 		self.fpscap = 10_000
 		self.dt_fps = 60
 
