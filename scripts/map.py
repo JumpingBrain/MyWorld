@@ -6,7 +6,8 @@ from math import ceil
 
 RECT_EXCLUSIONS = [
 	'tree',
-	'grass_end'
+	'grass_end',
+	'grass_shard'
 ]
 
 def one_surf(map_data, sects):
@@ -59,7 +60,7 @@ class Map:
 
 		#load map
 		self.map_data = data.raw_map_data['fightingmap']
-		self.map_images, self.map_render_pos, self.map_slice_width = one_surf(self.map_data, 10)
+		self.map_images, self.map_render_pos, self.map_slice_width = one_surf(self.map_data, 4)
 		self.map_rects = get_map_rects(self.map_data)
 
 	def render(self):

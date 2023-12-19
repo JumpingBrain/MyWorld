@@ -1,6 +1,7 @@
 import pygame
 import sys
 from pygame.locals import *
+from math import floor
 
 pygame.init()
 
@@ -33,8 +34,8 @@ class Main:
 
 		self.camera[0] += (((self.player.rect.centerx - self.camera[0]) - (data.dissiz[0] / 2)) / 20) * self.dt
 		self.camera[1] += (((self.player.rect.centery - self.camera[1]) - (data.dissiz[1] / 2)) / 20) * self.dt
-		self.int_camera[0] = int(self.camera[0])
-		self.int_camera[1] = int(self.camera[1])
+		self.int_camera[0] = floor(self.camera[0])
+		self.int_camera[1] = floor(self.camera[1])
 
 		if self.time >= data.dt_fps:
 			self.time = 0
