@@ -27,6 +27,12 @@ class Main:
 		self.map = Map(self)
 		self.player = Player(self)
 
+		pygame.mouse.set_visible(False)
+
+	@property
+	def mpos(self):
+		return pygame.mouse.get_pos()
+
 	def updates(self):
 		self.dt = self.clock.tick(data.fpscap) * .001 * data.dt_fps
 		self.ticks += 1
@@ -59,6 +65,11 @@ class Main:
 		self.map.render()
 
 		self.player.render()
+		self.player.render_stats()
+
+		#render mouse cursor
+		mouse_change = pygame.mouse.get_rel() #so the cursor sticks to the mouse
+		self.display.blit(data.images['ui']['cursor'][0], ((self.mpos[0] / data.ratio) + (mouse_change[0] / 10), (self.mpos[1] / data.ratio) + (mouse_change[1] / 10)))
 
 		self.window.blit(pygame.transform.scale(self.display, self.window.get_size()), (0, 0))
 

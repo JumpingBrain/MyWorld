@@ -26,6 +26,19 @@ class Player:
 		self.falling_speed = .2
 		self.jump_cnt = 0
 
+		#stats
+		#HEALTH
+		self.health = 100
+		self.health_bar_length = 75
+		self.regen_speed = .2
+		#SHIELD
+		self.shield = 100
+		self.shield_bar_length = 25
+		#LEVELING
+		self.level = 0
+		self.xp = 5
+		self.xp_bar_length = 14
+
 	@property
 	def pos(self):
 		return [self.rect.centerx, self.rect.centery]
@@ -34,6 +47,49 @@ class Player:
 	def reset_ani(self, new_ani):
 		if new_ani != self.movement:
 			self.curr_image_frame = 0
+
+	def xp_needed(self):
+		if self.level < 10:
+			return (self.level + 1) * 4
+		elif self.level > 9 and self.level < 20:
+			return (self.level + 1) * 2
+		elif self.level > 19 and self.level < 30:
+			return (self.level + 1) * 1.5
+		else:
+			return 1*(10**6)
+
+	def render_stats(self):
+		#HEALTH
+		width = self.health_bar_length * (self.health / 100)
+		x_pos = data.dissiz[0] - width
+		padding = 2
+		pygame.draw.rect(self.main.display, (196, 68, 74), (x_pos - padding, padding, width, 7))
+		self.main.display.blit(data.images['ui']['healthbar_border'][0], (x_pos - padding - 1, padding - 1))
+
+		#SHIEDL
+		width = self.shield_bar_length * (self.shield / 100)
+		x_pos = data.dissiz[0] - width
+		padding = 9 + 3
+		pygame.draw.rect(self.main.display, (97, 186, 255), (x_pos - 2, padding, width, 4))
+		self.main.display.blit(data.images['ui']['shieldbar_border'][0], (x_pos - 2 - 1, padding - 1))
+
+		#LEVEL
+		self.main.display.blit(data.images['ui']['level_border'][0], (2, 2))
+		font = data.fonts['mainfont' + '16']
+		level_surf = font.render(str(int(self.level)), False, (255, 255, 235))
+		if self.level > 10: self.main.display.blit(level_surf, (3, 3))
+		else: self.main.display.blit(level_surf, (3 + 4, 3))
+		#####################-XP
+		xp_needed = self.xp_needed()
+		width = self.xp_bar_length * (self.xp / xp_needed)
+		x_pos = 4
+		padding = 2
+		pygame.draw.rect(self.main.display, (118, 255, 112), (x_pos, 22, width, 4))
+		self.main.display.blit(data.images['ui']['xpbar_border'][0], (x_pos - 1, 22 - 1))
+		########-resetting xp and leveling up is done here
+		if self.xp >= xp_needed:
+			self.level += 1 
+			self.xp = 0
 
 	def render(self):
 		if self.curr_image_frame >= len(self.images[f'{self.movement} {self.dir}']):

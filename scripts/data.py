@@ -6,6 +6,8 @@ from pathlib import Path
 path = Path(os.getcwd())
 PARDIR = str(path.parent.absolute())
 
+pygame.font.init()
+
 class Data:
 	def __init__(self):
 		mon_info = pygame.display.Info()
@@ -13,10 +15,12 @@ class Data:
 
 		self.jsondir = PARDIR + '/json/'
 		self.imagedir = PARDIR + '/images/'
+		self.fontdir = PARDIR + '/fonts/'
 		nongame_data = json.load(open(self.jsondir + 'non_game_save.json'))
 
 		self.winsiz = nongame_data['winsiz']
 		self.dissiz = nongame_data['dissiz']
+		self.ratio = self.winsiz[0] / self.dissiz[0]
 
 		self.raw_map_data = {key[:-5]:json.load(open(self.jsondir + 'maps/' + key)) for key in os.listdir(self.jsondir + 'maps/')}
 		
@@ -29,8 +33,16 @@ class Data:
 				unpack_size, dis = self.get_unpack_size(filename)
 				self.images[foldername][filename[:-dis]] = self.unpack(
 					pygame.image.load(curr_dir + filename), unpack_size)
-		#print(self.images['maps'])
-
+		
+		self.fonts = {}
+		f_base = 6
+		f_size = f_base
+		for font_name in os.listdir(self.fontdir):
+			for i in range(6):
+				font = pygame.font.Font(self.fontdir + font_name, f_size)
+				self.fonts[font_name[:-4] + str(f_size)] = font
+				f_size += 2
+			f_size = f_base
 
 		#player stuff
 		self.spawn = nongame_data['playerspawn']
