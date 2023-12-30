@@ -1,6 +1,7 @@
 import pygame
 
 from data import data
+from sounds import sfx
 
 
 class Player:

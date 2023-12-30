@@ -5,7 +5,9 @@ from math import floor
 
 pygame.init()
 
+from menu.menu_main import MenuMain
 from data import data
+from sounds import sfx
 from map import Map
 from player import Player
 
@@ -19,6 +21,10 @@ class Main:
 		self.dt = 0
 		self.ticks = 0
 		self.time = 0
+
+		#run the menu before loading in the game
+		self.menu_main = MenuMain(self)
+		self.menu_main.run()
 
 		self.camera = [0, 0]
 		self.int_camera = self.camera.copy()
@@ -35,6 +41,8 @@ class Main:
 
 	def updates(self):
 		self.dt = self.clock.tick(data.fpscap) * .001 * data.dt_fps
+		if self.dt <= 0:
+			self.dt += .1
 		self.ticks += 1
 		self.time += 1 * self.dt
 
@@ -54,6 +62,8 @@ class Main:
 			elif event.type == KEYDOWN:
 				if event.key == K_SPACE:
 					if self.player.jump_cnt < 2:
+						sfx.sounds['jump'].reset()
+						sfx.sounds['jump'].play(self.dt, self.ticks, 2)
 						self.player.y_momentum = -4
 						self.player.jump_cnt += 1
 						self.player.movement = 'jumping'

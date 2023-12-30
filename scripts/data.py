@@ -16,6 +16,7 @@ class Data:
 		self.jsondir = PARDIR + '/json/'
 		self.imagedir = PARDIR + '/images/'
 		self.fontdir = PARDIR + '/fonts/'
+		self.sounddir = PARDIR + '/sounds/'
 		nongame_data = json.load(open(self.jsondir + 'non_game_save.json'))
 
 		self.winsiz = nongame_data['winsiz']
