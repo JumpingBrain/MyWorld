@@ -24,7 +24,7 @@ class Main:
 
 		#run the menu before loading in the game
 		self.menu_main = MenuMain(self)
-		self.menu_main.run()
+		#self.menu_main.run()
 
 		self.camera = [0, 0]
 		self.int_camera = self.camera.copy()
